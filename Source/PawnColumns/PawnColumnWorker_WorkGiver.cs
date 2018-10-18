@@ -74,11 +74,34 @@ namespace WorkTab
 
         protected virtual void DrawWorkGiverBoxFor( Rect box, Pawn pawn, WorkGiverDef workgiver, bool incapable )
         {
+            List<SkillDef> skillsNeeded = workgiver.workType.relevantSkills;
+            float averageSkill = pawn.skills.AverageOfRelevantSkillsFor(workgiver.workType);
+
+            Passion passion = Passion.None;
+            if(skillsNeeded.Count > 0)
+                passion = pawn.skills.GetSkill(workgiver.workType.relevantSkills[0]).passion;
+
+            Color red = new Color(1f, 0f, 0f);
+            Color green = new Color(0f, 1f, 0f);
+            Color blue = new Color(0f, 0f, 1f);
+            Color black = new Color(0f, 0f, 0f);
+
+            Color passionColor;
+            if(passion == Passion.None) {
+                passionColor = red;
+            } else if(passion == Passion.Minor) {
+                passionColor = blue;
+            } else  {
+                passionColor = green;
+            }
+
+            GUI.color = Color.Lerp(black + (passionColor * 0.2f), passionColor, averageSkill / 20);
             // draw background
-            GUI.color = incapable ? new Color( 1f, .3f, .3f ) : Color.white;
+            //GUI.color = incapable ? new Color( 1f, .3f, .3f ) : Color.white;
+            
             DrawUtilities.DrawWorkBoxBackground( box, pawn, workgiver.workType );
             GUI.color = Color.white;
-
+            
             // draw extras
             var tracker = PriorityManager.Get[pawn];
             if (tracker.TimeScheduled(workgiver))

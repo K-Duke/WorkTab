@@ -137,7 +137,7 @@ namespace WorkTab
                 }
                 return priorities[workgiver];
             }
-            set => priorities[workgiver] = value;
+            set { priorities[workgiver] = value; }
         }
 
         public PawnPriorityTracker(){
